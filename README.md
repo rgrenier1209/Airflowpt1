@@ -2,6 +2,8 @@
 
 Apache Airflow data pipeline designed to extract 1-minute interval stock market data for AAPL and TSLA, isolate date-stamped execution directories, move processed datasets, and execute downstream analytics.
 
+---
+
 ## Getting Started
 
 ### Prerequisites
@@ -30,7 +32,8 @@ pip install apache-airflow pandas yfinance
    ```text
    .
    ├── dags/
-   │   └── marketvol_3.py
+   │   ├── marketvol_3.py
+   │   └── log_analyzer.py
    ├── docker-compose.yaml
    └── README.md
    ```
@@ -52,6 +55,43 @@ pip install apache-airflow pandas yfinance
    AAPL Total Rows: 390
    TSLA Total Rows: 390
    ```
+
+---
+
+## Airflow Log Analyzer
+
+The `log_analyzer.py` script recursively parses all Airflow task execution log files, counts occurrences of specified log statuses (e.g., `ERROR`, `WARNING`, `INFO`), and prints both cumulative summary counts and full log details.
+
+### Script Location & Requirements
+* **Script:** `dags/log_analyzer.py`
+* **Log Directory:** `logs/dag_id=marketvol`
+
+### Usage
+
+Run the script from the project root directory by passing the path to the target log folder:
+
+```bash
+# Default search for ERROR entries
+python dags/log_analyzer.py logs/dag_id=marketvol
+```
+
+#### Optional Level Arguments
+Use `--level` or `-l` to search for specific log keywords (case-insensitive):
+
+```bash
+# Search for WARNING entries
+python dags/log_analyzer.py logs/dag_id=marketvol --level WARNING
+
+# Search for INFO entries
+python dags/log_analyzer.py logs/dag_id=marketvol -l INFO
+```
+
+#### Saving Execution Output
+To capture analysis output into an execution log file for submission or inspection:
+
+```bash
+python dags/log_analyzer.py logs/dag_id=marketvol --level error > log_analyzer_execution.log
+```
 
 ---
 
@@ -89,5 +129,3 @@ pip install apache-airflow pandas yfinance
 ## Authors
 
 * **Ricardo Grenier** - *Initial Work & Pipeline Construction* - [rgrenier1209](https://github.com/rgrenier1209)
-README.md
-Displaying README.md.
